@@ -28,13 +28,13 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 /* REDUX PERSISTENCE */
 const createNoopStorage = () => {
   return {
-    getItem(_key: string) {
+    getItem(_key: any) {
       return Promise.resolve(null);
     },
-    setItem(_key: string, value: string) {
+    setItem(_key: any, value: any) {
       return Promise.resolve(value);
     },
-    removeItem(_key: string) {
+    removeItem(_key: any) {
       return Promise.resolve();
     },
   };
@@ -99,8 +99,4 @@ export default function StoreProvider({
     </Provider>
   );
 }
-import reducer from "@/state";
-import { current } from "@reduxjs/toolkit";
-import { resolve } from "dns";
-import { concat } from "lodash";
-import { ReactNode } from "react";
+
