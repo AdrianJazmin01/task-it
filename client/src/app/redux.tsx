@@ -28,13 +28,13 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 /* REDUX PERSISTENCE */
 const createNoopStorage = () => {
   return {
-    getItem(_key: any) {
+    getItem(key: string) {  // Removed underscore from key
       return Promise.resolve(null);
     },
-    setItem(_key: any, value: any) {
+    setItem(key: string, value: string) {  // Changed type from any to string
       return Promise.resolve(value);
     },
-    removeItem(_key: any) {
+    removeItem(key: string) {  // Changed type from any to string
       return Promise.resolve();
     },
   };
@@ -99,4 +99,3 @@ export default function StoreProvider({
     </Provider>
   );
 }
-
