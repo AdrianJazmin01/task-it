@@ -24,21 +24,23 @@ import {
 } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import { resolve } from "dns";
 
 /* REDUX PERSISTENCE */
 const createNoopStorage = () => {
   return {
-    getItem(key: string) {  // Removed underscore from key
+    getItem() { 
       return Promise.resolve(null);
     },
-    setItem(key: string, value: string) {  // Changed type from any to string
+    setItem(value: string) { 
       return Promise.resolve(value);
     },
-    removeItem(key: string) {  // Changed type from any to string
+    removeItem() { 
       return Promise.resolve();
     },
   };
 };
+
 
 const storage =
   typeof window === "undefined"
