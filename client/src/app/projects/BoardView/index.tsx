@@ -15,7 +15,7 @@ type BoardProps = {
 
 const taskStatus = ["To Do", "Work In Progress", "Under Review", "Completed"];
 
-const BoardView = ({ id, setIsModalNewTaskOpen}: BoardProps) => {
+const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
   const {
     data: tasks,
     isLoading,
@@ -60,17 +60,17 @@ const TaskColumn = ({
   moveTask,
   setIsModalNewTaskOpen,
 }: TaskColumnProps) => {
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [{ isOver }, drop] = useDrop<{ id: number }, void, { isOver: boolean }>({
     accept: "task",
-    drop: (item: { id: number }) => moveTask(item.id, status),
-    collect: (monitor: any) => ({
+    drop: (item) => moveTask(item.id, status),
+    collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
-  }));
+  });
 
   const tasksCount = tasks.filter((task) => task.status === status).length;
 
-  const statusColor: any = {
+  const statusColor: Record<string, string> = {
     "To Do": "#2563EB",
     "Work In Progress": "#059669",
     "Under Review": "#D97706",
@@ -82,7 +82,9 @@ const TaskColumn = ({
       ref={(instance) => {
         drop(instance);
       }}
-      className={`sl:py-4 rounded-lg py-2 xl:px-2 ${isOver ? "bg-blue-100 dark:bg-neutral-950" : ""}`}
+      className={`sl:py-4 rounded-lg py-2 xl:px-2 ${
+        isOver ? "bg-blue-100 dark:bg-neutral-950" : ""
+      }`}
     >
       <div className="mb-3 flex w-full">
         <div
@@ -94,8 +96,9 @@ const TaskColumn = ({
             {status}{" "}
             <span
               className="ml-2 inline-block rounded-full bg-gray-200 p-1 text-center text-sm leading-none dark:bg-dark-tertiary"
-              style={{ width: "1.5rem", height: "1.5rem" }} > 
-              {tasksCount} 
+              style={{ width: "1.5rem", height: "1.5rem" }}
+            >
+              {tasksCount}
             </span>
           </h3>
 
@@ -127,13 +130,13 @@ type TaskProps = {
 };
 
 const Task = ({ task }: TaskProps) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [{ isDragging }, drag] = useDrag<{ id: number }, void, { isDragging: boolean }>({
     type: "task",
     item: { id: task.id },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
-  }));
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
   const taskTagsSplit = task.tags ? task.tags.split(",") : [];
@@ -203,8 +206,10 @@ const Task = ({ task }: TaskProps) => {
                 ))}
               </div>
             </div>
-            <button className="flex h-6 w-4 flex-shrink-0 items-center justify-center dark:text-neutral-500"
-              onClick={handleOpenModal}>
+            <button
+              className="flex h-6 w-4 flex-shrink-0 items-center justify-center dark:text-neutral-500"
+              onClick={handleOpenModal}
+            >
               <EllipsisVertical size={26} />
             </button>
           </div>
@@ -246,25 +251,28 @@ const Task = ({ task }: TaskProps) => {
                 />
               )}
             </div>
-            <div className="flex items-center text-gray-500 dark:text-neutral-500">
-              <MessageSquareMore size={20} />
-              <span className="ml-1 text-sm dark:text-neutral-400">
-                {numberOfComments}
-              </span>
+
+            {/* Comments */}
+            <div className="flex items-center gap-1 dark:text-neutral-500">
+              <MessageSquareMore size={14} />
+              <p className="text-xs">{numberOfComments}</p>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Modal for Task Details */}
       <ModalTaskDetails
+        task={task}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        task={task} // Pass the current task to the modal
       />
     </>
   );
 };
 
-
 export default BoardView;
+// import src from "@emotion/styled";
+// import { id } from "date-fns/locale";
+// import { map, filter, size, split } from "lodash";
+// import { type } from "os";
+// import { title } from "process";
+// import style from "styled-jsx/style";

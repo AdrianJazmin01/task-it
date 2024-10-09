@@ -30,7 +30,7 @@ const taskColumns: GridColDef[] = [
   { field: "dueDate", headerName: "Due Date", width: 150 },
 ];
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
 
 const HomePage = () => {
   // Initialize projectId from localStorage, or default to 1
@@ -91,10 +91,10 @@ const HomePage = () => {
     {}
   );
 
-  const projectStatus = Object.keys(statusCount).map((key) => ({
-    name: key,
-    count: statusCount[key],
-  }));
+  // const projectStatus = Object.keys(statusCount).map((key) => ({
+  //   name: key,
+  //   count: statusCount[key],
+  // }));
 
   const chartColors = isDarkMode
     ? {
@@ -176,10 +176,10 @@ const HomePage = () => {
 };
 
 export default HomePage;
-import { count } from "console";
-import { id } from "date-fns/locale";
-import { find, reduce, keys, map, fill } from "lodash";
-import { title } from "process";
-import { text } from "stream/consumers";
-import style from "styled-jsx/style";
-import { isError } from "util";
+// import { count } from "console";
+// import { id } from "date-fns/locale";
+// import { find, reduce, keys, map, fill } from "lodash";
+// import { title } from "process";
+// import { text } from "stream/consumers";
+// import style from "styled-jsx/style";
+// import { isError } from "util";

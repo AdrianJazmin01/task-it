@@ -1,27 +1,18 @@
 "use client";
 
-import Image from "next/image";
+
 import React, { useState } from "react";
 import {
-  AlertCircle,
-  AlertOctagon,
-  AlertTriangle,
   Briefcase,
   ChevronDown,
   ChevronUp,
   Home,
-  Layers3,
-  LockIcon,
   LucideIcon,
-  Plus,
   PlusSquare,
   Presentation,
   Search,
   Settings,
-  ShieldAlert,
-  TrashIcon,
   User,
-  Users,
   X,
 } from "lucide-react";
 import Link from "next/link";

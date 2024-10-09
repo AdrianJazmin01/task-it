@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useRef } from "react";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
@@ -28,13 +28,13 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 /* REDUX PERSISTENCE */
 const createNoopStorage = () => {
   return {
-    getItem(_key: any) {
+    getItem(_key: string) {
       return Promise.resolve(null);
     },
-    setItem(_key: any, value: any) {
+    setItem(_key: string, value: string) {
       return Promise.resolve(value);
     },
-    removeItem(_key: any) {
+    removeItem(_key: string) {
       return Promise.resolve();
     },
   };
@@ -50,10 +50,12 @@ const persistConfig = {
   storage,
   whitelist: ["global"],
 };
+
 const rootReducer = combineReducers({
   global: globalReducer,
   [api.reducerPath]: api.reducer,
 });
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 /* REDUX STORE */
@@ -97,3 +99,8 @@ export default function StoreProvider({
     </Provider>
   );
 }
+import reducer from "@/state";
+import { current } from "@reduxjs/toolkit";
+import { resolve } from "dns";
+import { concat } from "lodash";
+import { ReactNode } from "react";
