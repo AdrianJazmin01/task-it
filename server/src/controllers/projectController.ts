@@ -1,4 +1,4 @@
-import { json, Request, Response } from "express";
+import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -36,16 +36,27 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
   const { id } = req.params;
 
   try {
-    // Step 1: Delete task assignments related to tasks in the project
+    // Check if the project exists
+    const existingProject = await prisma.project.findUnique({
+      where: { id: Number(id) },
+    });
+
+
+    // Step 1: Get all tasks associated with the project
+    const tasks = await prisma.task.findMany({
+      where: { projectId: Number(id) },
+    });
+
+    // Step 2: Delete task assignments related to tasks in the project
     await prisma.taskAssignment.deleteMany({
       where: {
-        task: {
-          projectId: Number(id),
+        taskId: {
+          in: tasks.map(task => task.id), // Use the IDs of the tasks
         },
       },
     });
 
-    // Step 2: Delete comments related to tasks in the project
+    // Step 3: Delete comments related to tasks in the project
     await prisma.comment.deleteMany({
       where: {
         task: {
@@ -54,7 +65,7 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
       },
     });
 
-    // Step 3: Delete attachments related to tasks in the project
+    // Step 4: Delete attachments related to tasks in the project
     await prisma.attachment.deleteMany({
       where: {
         task: {
@@ -63,24 +74,22 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
       },
     });
 
-    // Step 4: Delete tasks associated with the project
+    // Step 5: Delete tasks associated with the project
     await prisma.task.deleteMany({
       where: { projectId: Number(id) },
     });
 
-    // Step 5: Delete the project itself
+    // Step 6: Delete the project itself
     const project = await prisma.project.delete({
       where: { id: Number(id) },
     });
 
     res.status(200).json({ message: `Project with ID ${id} deleted successfully.`, project });
   } catch (error: any) {
-    if (error.code === 'P2025') {
-      res.status(404).json({ message: `Project with ID ${id} not found.` });
-    } else {
-      res.status(500).json({ message: `Error deleting project: ${error.message}` });
-    }
+    console.error(error); // Log the error for debugging
+    res.status(500).json({ message: `Error deleting project: ${error.message}` });
   }
 };
+
 
 
