@@ -1,17 +1,13 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 
 model User {
   userId            Int     @id @default(autoincrement())
@@ -22,9 +18,9 @@ model User {
 
   authoredTasks   Task[]           @relation("TaskAuthor")
   assignedTasks   Task[]           @relation("TaskAssignee")
-  taskAssignments TaskAssignment[]
-  attachments     Attachment[]
-  comments        Comment[]
+  taskAssignments TaskAssignment[] // This is correctly defined
+  attachments     Attachment[] // This is correctly defined
+  comments        Comment[] // This is correctly defined
   team            Team?            @relation(fields: [teamId], references: [id])
 }
 
@@ -43,7 +39,7 @@ model Project {
   description  String?
   startDate    DateTime?
   endDate      DateTime?
-  tasks        Task[]
+  tasks        Task[]        @relation("ProjectTasks") // Define the relation here
   projectTeams ProjectTeam[]
 }
 
@@ -69,12 +65,12 @@ model Task {
   authorUserId   Int
   assignedUserId Int?
 
-  project         Project          @relation(fields: [projectId], references: [id])
+  project         Project          @relation("ProjectTasks", fields: [projectId], references: [id]) // Relation defined here
   author          User             @relation("TaskAuthor", fields: [authorUserId], references: [userId])
   assignee        User?            @relation("TaskAssignee", fields: [assignedUserId], references: [userId])
-  taskAssignments TaskAssignment[]
-  attachments     Attachment[]
-  comments        Comment[]
+  taskAssignments TaskAssignment[] @relation("TaskAssignments") // Named relation
+  attachments     Attachment[]     @relation("TaskAttachments") // Named relation
+  comments        Comment[]        @relation("TaskComments") // Named relation
 }
 
 model TaskAssignment {
@@ -83,7 +79,7 @@ model TaskAssignment {
   taskId Int
 
   user User @relation(fields: [userId], references: [userId])
-  task Task @relation(fields: [taskId], references: [id])
+  task Task @relation("TaskAssignments", fields: [taskId], references: [id], onDelete: Cascade) // Specify onDelete here
 }
 
 model Attachment {
@@ -93,7 +89,7 @@ model Attachment {
   taskId       Int
   uploadedById Int
 
-  task       Task @relation(fields: [taskId], references: [id])
+  task       Task @relation("TaskAttachments", fields: [taskId], references: [id], onDelete: Cascade) // Specify onDelete here
   uploadedBy User @relation(fields: [uploadedById], references: [userId])
 }
 
@@ -103,6 +99,6 @@ model Comment {
   taskId Int
   userId Int
 
-  task Task @relation(fields: [taskId], references: [id])
+  task Task @relation("TaskComments", fields: [taskId], references: [id], onDelete: Cascade) // Specify onDelete here
   user User @relation(fields: [userId], references: [userId])
 }
